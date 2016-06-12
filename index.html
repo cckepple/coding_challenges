@@ -1,0 +1,127 @@
+<html>
+<head>
+	<title>Login</title>
+	<link rel="shortcut icon" href="http://php.net/favicon.ico">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<style type="text/css">
+		.form-area {
+			text-align: center;
+		}
+	</style>
+</head>
+<body style="padding-top:5%;font-family:'Courier New', Courier, monospace">
+	<div id="loginUser" class="form-area">
+		<h2>Please Login</h2>
+		<table align="center">
+			<tr>
+				<td><label>Username</label></td>
+				<td><input type="text" name="username" value="corey" id="username"></td>
+			</tr>
+			<tr>
+				<td><label>Password</label></td>
+				<td><input type="password" name="password" value="pass" id="pass"></td>
+			</tr>
+			<tr>
+				<td><label>Email</label></td>
+				<td><input type="email" name="email" value="email" id="email"></td>
+			</tr>
+			<tr>
+				<td><label>Name</label></td>
+				<td><input type="text" name="name" value="name" id="name"></td>
+			</tr>
+		</table>
+		<br>
+		<button id="submitLogin" type="submit">login</button>
+	</div>
+	<div id="authUser" style="display:none;" class="form-area">
+		<h4>Welcome Back <span id="displayName"></span></h4>
+	</div>
+	<div id="registerUser" style="text-align:center;display:none;">
+		<h2>Please Register</h2>
+		<table align="center">
+			<tr>
+				<td><label>Username</label></td>
+				<td><input type="text" name="username" value="corey" id="regUsername"></td>
+			</tr>
+			<tr>
+				<td><label>Password</label></td>
+				<td><input type="password" name="password" value="pass" id="regPass"></td>
+			</tr>
+			<tr>
+				<td><label>Email</label></td>
+				<td><input type="email" name="email" value="email" id="regEmail"></td>
+			</tr>
+			<tr>
+				<td><label>Name</label></td>
+				<td><input type="text" name="name" value="name" id="regName"></td>
+			</tr>
+		</table>
+		<br>
+		<button id="submitRegister" type="submit">Register</button>
+	</div>
+	<br>
+	<div id="errorBlock" style="display:none;color:red;text-align:center"></div>
+</body>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('#submitLogin').on('click', function(e){
+		e.preventDefault();
+		$('#errorBlock').hide();
+		$.post('php/login.php',
+		{
+			username:$('#username').val(),
+			password:$('#pass').val(),
+			email:$('#email').val(), 
+			name:$('#name').val(), 
+
+		}).success(function(data){
+			var user = data.user;
+			if (data.error == false) {
+				$('#loginUser').hide();
+				$('#displayName').text(user.name)
+				$('#authUser').show();
+			}else if(data.error == 1){
+				// username / pw don't match
+				$('#errorBlock').text(data.message);
+				$('#errorBlock').show();
+			}else{
+				$('#loginUser').hide();
+				$('#registerUser').show();
+				$('#errorBlock').text(data.message);
+				$('#errorBlock').show();
+				$('#regUsername').val(user.username)
+				$('#regEmail').val(user.email);
+				$('#regName').val(user.name);
+			}
+		}).error(function(data){
+			console.log('bad');
+			console.log(data);
+		});
+	});
+
+	$('#submitRegister').on('click', function(e){
+		e.preventDefault();
+		$('#errorBlock').hide();
+		$.post('php/register.php',
+		{
+			username:$('#regUsername').val(),
+			password:$('#regPass').val(),
+			email:$('#regEmail').val(), 
+			name:$('#regName').val(), 
+		}).success(function(data){
+			var user = data.user;
+			$('#registerUser').hide();
+			$('#displayName').text(user.name)
+			$('#authUser').show();
+		}).error(function(data){
+			console.log('error');
+			console.log(data);
+			$('#errorBlock').show();
+			$('#errorBlock').html(data.responseText);
+		});
+	});
+
+});
+</script>
+</html>
