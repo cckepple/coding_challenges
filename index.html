@@ -1,15 +1,16 @@
 <html>
 <head>
 	<title>Login</title>
-	<link rel="shortcut icon" href="http://php.net/favicon.ico">
+	<link rel="shortcut icon" href="img/ck.jpg">
 	<link rel="stylesheet" type="text/css" href="css/custom.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
 </head>
 <body class="body-styles">
 
-	<div id="loginUser" class="form-area">
-		<h2>Please Login</h2>
+	<div id="userForm" class="form-area">
+		<h2 class="logUser">Please Login</h2>
+		<h2 id="regHead" class="register-user">Please Register</h2>
 		<table align="center" class="gradiant">
 			<tr>
 				<td><label>Username</label></td>
@@ -19,97 +20,76 @@
 				<td><label>Password</label></td>
 				<td><input type="password" name="password" value="" id="pass"></td>
 			</tr>
-		</table>
-		<br>
-		<button id="submitLogin" type="submit" class="myButton">login</button>
-	</div>
-	<div id="authUser" style="display:none;" class="form-area">
-		<h4>Welcome Back <span id="displayName"></span></h4>
-	</div>
-	<div id="registerUser" style="text-align:center;display:none;" class="form-area">
-		<h2>Please Register</h2>
-		<table align="center" class="gradiant">
-			<tr>
-				<td><label>Username</label></td>
-				<td><input type="text" name="username" value="" id="regUsername"></td>
+			<tr class="register-user">
+				<td><label>Confirm PW</label></td>
+				<td><input type="password" name="passConf" value="" id="passConf"></td>
 			</tr>
-			<tr>
-				<td><label>Password</label></td>
-				<td><input type="password" name="password" value="" id="regPass"></td>
-			</tr>
-			<tr>
+			<tr class="register-user">
 				<td><label>Email</label></td>
-				<td><input type="email" name="email" value="" id="regEmail"></td>
+				<td><input type="email" name="email" value="" id="email"></td>
 			</tr>
-			<tr>
+			<tr class="register-user">
 				<td><label>Name</label></td>
-				<td><input type="text" name="name" value="" id="regName"></td>
+				<td><input type="text" name="name" value="" id="name"></td>
 			</tr>
 		</table>
 		<br>
-		<button id="submitRegister" type="submit" class="myButton">Register</button>
+		<button id="newUser" onClick="showRegistration()" class="myButton logUser">New User</button>
+		<button id="submitLogin" class="myButtonSuccess logUser">Login</button>
+		<button id="gotoLogin" onClick="showLogin()" class="myButton register-user">Goto Login</button>
+		<button id="submitRegister" class="myButtonSuccess register-user">Register</button>
 	</div>
+
+	<div id="authUser" style="display:none;" class="form-area">
+		<h4>Welcome <span id="displayName"></span></h4>
+		<table align="center">
+			<tr>
+				<td>email:</td>
+				<td id="displayEmail"></td>
+			</tr>
+			<tr>
+				<td>username:</td>
+				<td id="displayUn"></td>
+			</tr>
+			<tr>
+				<td>last login (UTC):</td>
+				<td id="lastLog"></td>
+			</tr>
+			<tr>
+				<td>created user (UTC):</td>
+				<td id="createdAt"></td>
+			</tr>
+			
+		</table>
+	</div>
+
 	<br>
-	<div id="errorBlock" style="display:none;color:red;text-align:center"></div>
+	<div id="errorBlock" class="errors"></div>
+
+	<div id="validationBlock" class="validators errors">
+		<!-- username validators -->
+		<div id="emptyUsername" class="validators">Username cannot be empty.</div>
+		<div id="longUsername" class="validators">Username is too long, max 24 characters.</div>
+		<div id="invalidUsername" class="validators">Username is invalid, only alphanumeric characters allowed.</div>
+
+		<!-- password validators -->
+		<div id="emptyPassword" class="validators">Password cannot be empty.</div>
+		<div id="longPassword" class="validators">Password is too long, max 255 characters.</div>
+		<div id="invalidPassword" class="validators">Password is invalid, cannot contain spaces.</div>
+		<div id="confirmPass" class="validators">Password and Confirm PW must match.</div>
+
+
+		<!-- email validators -->
+		<div id="emptyEmail" class="validators">Email cannot be empty.</div>
+		<div id="longEmail" class="validators">Email is too long, max 254 characters.</div>
+		<div id="invalidEmail" class="validators">Email is invalid, does not follow email address format.</div>
+
+		<!-- name validators -->
+		<div id="emptyName" class="validators">Name cannot be empty.</div>
+		<div id="longName" class="validators">Name is too long, max 99 characters.</div>
+		<div id="invalidName" class="validators">Name is invalid, only alphanumeric characters allowed.</div>
+	</div>
 </body>
-<script type="text/javascript">
-$(document).ready(function(){
-
-	$('#submitLogin').on('click', function(e){
-		e.preventDefault();
-		$('#errorBlock').hide();
-		$.post('php/login.php',
-		{
-			username:$('#username').val(),
-			password:$('#pass').val(),
-
-		}).success(function(data){
-			var user = data.user;
-			if (data.error == false) {
-				$('#loginUser').hide();
-				$('#displayName').text(user.name)
-				$('#authUser').show();
-			}else if(data.error == 1){
-				// username / pw don't match
-				$('#errorBlock').text(data.message);
-				$('#errorBlock').show();
-			}else{
-				// username not in DB
-				$('#loginUser').hide();
-				$('#registerUser').show();
-				$('#errorBlock').text(data.message);
-				$('#errorBlock').show();
-
-				$('#regUsername').val(user.username)
-				$('#regEmail').val(user.email);
-				$('#regName').val(user.name);
-			}
-		}).error(function(data){
-			console.log('Server Error -- submit login');
-			console.log(data);
-		});
-	});
-
-	$('#submitRegister').on('click', function(e){
-		e.preventDefault();
-		$('#errorBlock').hide();
-		$.post('php/register.php',
-		{
-			username:$('#regUsername').val(),
-			password:$('#regPass').val(),
-			email:$('#regEmail').val(), 
-			name:$('#regName').val(), 
-		}).success(function(data){
-			var user = data.user;
-			$('#registerUser').hide();
-			$('#displayName').text(user.name)
-			$('#authUser').show();
-		}).error(function(data){
-			console.log('Server Error -- register user');
-			console.log(data);
-		});
-	});
-
-});
-</script>
+<script type="text/javascript" src="js/validation.js"></script>
+<script type="text/javascript" src="js/custom.js"></script>
 </html>
