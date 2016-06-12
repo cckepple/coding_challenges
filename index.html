@@ -2,26 +2,9 @@
 <head>
 	<title>Login</title>
 	<link rel="shortcut icon" href="http://php.net/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="css/custom.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-	<style type="text/css">
-		.form-area {
-			text-align: center;
-		}
 
-		.body-styles{
-			padding-top:5%;
-			font-family:'Courier New', Courier, monospace;
-			background-image:url('img/background.jpg');
-		}
-
-		.gradiant{
-			background: -moz-linear-gradient(top,  #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%); /* FF3.6-15 */
-			background: -webkit-linear-gradient(top,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* Chrome10-25,Safari5.1-6 */
-			background: linear-gradient(to bottom,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
-
-		}
-	</style>
 </head>
 <body class="body-styles">
 
@@ -30,49 +13,41 @@
 		<table align="center" class="gradiant">
 			<tr>
 				<td><label>Username</label></td>
-				<td><input type="text" name="username" value="corey" id="username"></td>
+				<td><input type="text" name="username" value="" id="username"></td>
 			</tr>
 			<tr>
 				<td><label>Password</label></td>
-				<td><input type="password" name="password" value="pass" id="pass"></td>
-			</tr>
-			<tr>
-				<td><label>Email</label></td>
-				<td><input type="email" name="email" value="email" id="email"></td>
-			</tr>
-			<tr>
-				<td><label>Name</label></td>
-				<td><input type="text" name="name" value="name" id="name"></td>
+				<td><input type="password" name="password" value="" id="pass"></td>
 			</tr>
 		</table>
 		<br>
-		<button id="submitLogin" type="submit">login</button>
+		<button id="submitLogin" type="submit" class="myButton">login</button>
 	</div>
 	<div id="authUser" style="display:none;" class="form-area">
 		<h4>Welcome Back <span id="displayName"></span></h4>
 	</div>
-	<div id="registerUser" style="text-align:center;display:none;">
+	<div id="registerUser" style="text-align:center;display:none;" class="form-area">
 		<h2>Please Register</h2>
-		<table align="center">
+		<table align="center" class="gradiant">
 			<tr>
 				<td><label>Username</label></td>
-				<td><input type="text" name="username" value="corey" id="regUsername"></td>
+				<td><input type="text" name="username" value="" id="regUsername"></td>
 			</tr>
 			<tr>
 				<td><label>Password</label></td>
-				<td><input type="password" name="password" value="pass" id="regPass"></td>
+				<td><input type="password" name="password" value="" id="regPass"></td>
 			</tr>
 			<tr>
 				<td><label>Email</label></td>
-				<td><input type="email" name="email" value="email" id="regEmail"></td>
+				<td><input type="email" name="email" value="" id="regEmail"></td>
 			</tr>
 			<tr>
 				<td><label>Name</label></td>
-				<td><input type="text" name="name" value="name" id="regName"></td>
+				<td><input type="text" name="name" value="" id="regName"></td>
 			</tr>
 		</table>
 		<br>
-		<button id="submitRegister" type="submit">Register</button>
+		<button id="submitRegister" type="submit" class="myButton">Register</button>
 	</div>
 	<br>
 	<div id="errorBlock" style="display:none;color:red;text-align:center"></div>
@@ -87,8 +62,6 @@ $(document).ready(function(){
 		{
 			username:$('#username').val(),
 			password:$('#pass').val(),
-			email:$('#email').val(), 
-			name:$('#name').val(), 
 
 		}).success(function(data){
 			var user = data.user;

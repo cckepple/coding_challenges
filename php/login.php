@@ -4,11 +4,9 @@
 	try {
 		$credentials = array(
 							'username' => $_POST['username'],
-							'password' => $_POST['password'],
-							'email' => $_POST['email'],
-							'name' => $_POST['name']
+							'password' => $_POST['password']
 						);
-		
+
 		header('Content-Type: application/json');
 		echo json_encode(User::attemptLogin($credentials));
 
