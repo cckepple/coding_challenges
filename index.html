@@ -7,12 +7,27 @@
 		.form-area {
 			text-align: center;
 		}
+
+		.body-styles{
+			padding-top:5%;
+			font-family:'Courier New', Courier, monospace;
+			background-image:url('img/background.jpg');
+		}
+
+		.gradiant{
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f1f1f1 50%, #e1e1e1 51%, #f6f6f6 100%); /* FF3.6-15 */
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* Chrome10-25,Safari5.1-6 */
+			background: linear-gradient(to bottom,  #ffffff 0%,#f1f1f1 50%,#e1e1e1 51%,#f6f6f6 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 ); /* IE6-9 */
+
+		}
 	</style>
 </head>
-<body style="padding-top:5%;font-family:'Courier New', Courier, monospace">
+<body class="body-styles">
+
 	<div id="loginUser" class="form-area">
 		<h2>Please Login</h2>
-		<table align="center">
+		<table align="center" class="gradiant">
 			<tr>
 				<td><label>Username</label></td>
 				<td><input type="text" name="username" value="corey" id="username"></td>
@@ -86,16 +101,18 @@ $(document).ready(function(){
 				$('#errorBlock').text(data.message);
 				$('#errorBlock').show();
 			}else{
+				// username not in DB
 				$('#loginUser').hide();
 				$('#registerUser').show();
 				$('#errorBlock').text(data.message);
 				$('#errorBlock').show();
+
 				$('#regUsername').val(user.username)
 				$('#regEmail').val(user.email);
 				$('#regName').val(user.name);
 			}
 		}).error(function(data){
-			console.log('bad');
+			console.log('Server Error -- submit login');
 			console.log(data);
 		});
 	});
@@ -115,10 +132,8 @@ $(document).ready(function(){
 			$('#displayName').text(user.name)
 			$('#authUser').show();
 		}).error(function(data){
-			console.log('error');
+			console.log('Server Error -- register user');
 			console.log(data);
-			$('#errorBlock').show();
-			$('#errorBlock').html(data.responseText);
 		});
 	});
 
