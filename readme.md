@@ -1,4 +1,4 @@
-##No Frameworks User Login / Registration
+##No Frameworks User Login / Registration##
 
 Tech: HTML5, CSS3, jQuery (2.2.4), PHP 5.6, Sqlite3
 ---
