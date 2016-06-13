@@ -23,14 +23,11 @@
 						$recordId = $user['ID'];
 						$sql = "update users set last_login = '$now' where id = $recordId;";
 						$db_con->query($sql);
-						$db_con->close();
 						return array('error'=>false, 'user'=>$user, 'message'=>'Login Successful!','stmt'=>$sql);
 					}else{
-						$db_con->close();
 						return array('error'=>1, 'user'=>$credentials, 'message'=>'Username and password do not match.'); 
 					}
 				}else{
-					$db_con->close();
 					return array('error'=>2, 'user'=>$credentials, 'message'=>'Username not found.'); 
 				}
 			}else{
@@ -69,7 +66,6 @@
 					$safeInput = $db_con->escapeString($regInfo['username']);
 					$sql = "select * from users where username = '$safeInput';";
 					$user = $db_con->query($sql)->fetchArray();
-					$db_con->close();
 
 					return array('error'=>false, 'user'=>$user, 'message'=>'Registration Complete.','created_at'=>'derp'); 
 				}else{
@@ -162,7 +158,6 @@
 			$safeInput = $db_con->escapeString($username);
 			$sql = "select * from users where username = '$safeInput';";
 			$user = $db_con->query($sql)->fetchArray();
-			$db_con->close();
 
 			return $user;
 		}	
