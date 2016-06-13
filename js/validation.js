@@ -135,7 +135,7 @@ function authUser(data)
 	$('#displayUn').text(data.user.username);
 	$('#displayEmail').text(data.user.email);
 	$('#createdAt').text(data.user.created_at);
-	$('#lastLog').text(data.user.last_login);
+	$('#lastLog').text(data.login_time);
 
 	$('#authUser').show();
 }

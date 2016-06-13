@@ -23,7 +23,7 @@
 						$recordId = $user['ID'];
 						$sql = "update users set last_login = '$now' where id = $recordId;";
 						$db_con->query($sql);
-						return array('error'=>false, 'user'=>$user, 'message'=>'Login Successful!','stmt'=>$sql);
+						return array('error'=>false, 'user'=>$user, 'message'=>'Login Successful!','login_time'=>$now);
 					}else{
 						return array('error'=>1, 'user'=>$credentials, 'message'=>'Username and password do not match.'); 
 					}
@@ -66,13 +66,13 @@
 					$sql = "select * from users where username = '$safeInput';";
 					$user = $db_con->query($sql)->fetchArray();
 
-					return array('error'=>false, 'user'=>$user, 'message'=>'Registration Complete.','created_at'=>'derp'); 
+					return array('error'=>false, 'user'=>$user, 'message'=>'Registration Complete.','login_time'=>$now); 
 				}else{
-					return array('error'=>true, 'user'=>$regInfo, 'message'=>'Usename already taken.','created_at'=>'derp'); 
+					return array('error'=>true, 'user'=>$regInfo, 'message'=>'Usename already taken.'); 
 				}
 
 			}else{
-				return array('error'=>true, 'user'=>$regInfo, 'message'=>'User input contains errors.','created_at'=>'derp'); 
+				return array('error'=>true, 'user'=>$regInfo, 'message'=>'User input contains errors.'); 
 			}
 		}
 
