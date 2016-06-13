@@ -45,10 +45,9 @@
 		{
 
 			if(self::validateInput($regInfo)){
-				if (!self::usernameTaken($regInfo['username'])) {
+				$db_con = new Sqlite3('../db/test_db.sqlite');
+				if (!self::usernameTaken($regInfo['username'], $db_con)) {
 					$regInfo['password'] = hash('sha256',$regInfo['password']);
-
-					$db_con = new Sqlite3('../db/test_db.sqlite');
 					$id = (int)$db_con->querySingle('select * from users order by id DESC') + 1;
 					
 					$safeId = $db_con->escapeString($id);
@@ -152,13 +151,11 @@
 			return true;
 		}
 
-		private static function usernameTaken($username)
+		private static function usernameTaken($username, $db_con)
 		{
-			$db_con = $db_con = new Sqlite3('../db/test_db.sqlite');
 			$safeInput = $db_con->escapeString($username);
 			$sql = "select * from users where username = '$safeInput';";
 			$user = $db_con->query($sql)->fetchArray();
-
 			return $user;
 		}	
 	}
