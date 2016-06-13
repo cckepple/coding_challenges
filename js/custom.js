@@ -56,8 +56,12 @@ $(document).ready(function(){
 				name: credentials.name
 
 			}).success(function(data){
-				console.log(data);
-				authUser(data);
+				if (data.error) {
+					$('#errorBlock').text(data.message);
+					$('#errorBlock').show();
+				}else{
+					authUser(data);
+				}
 			}).error(function(data){
 				console.log('Server Error -- register user');
 				console.log(data);

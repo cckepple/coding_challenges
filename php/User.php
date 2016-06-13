@@ -23,11 +23,14 @@
 						$recordId = $user['ID'];
 						$sql = "update users set last_login = '$now' where id = $recordId;";
 						$db_con->query($sql);
+						$db_con->close();
 						return array('error'=>false, 'user'=>$user, 'message'=>'Login Successful!','stmt'=>$sql);
 					}else{
+						$db_con->close();
 						return array('error'=>1, 'user'=>$credentials, 'message'=>'Username and password do not match.'); 
 					}
 				}else{
+					$db_con->close();
 					return array('error'=>2, 'user'=>$credentials, 'message'=>'Username not found.'); 
 				}
 			}else{
@@ -45,28 +48,34 @@
 		{
 
 			if(self::validateInput($regInfo)){
+				if (!self::usernameTaken($regInfo['username'])) {
+					$regInfo['password'] = hash('sha256',$regInfo['password']);
 
-				$regInfo['password'] = hash('sha256',$regInfo['password']);
+					$db_con = new Sqlite3('../db/test_db.sqlite');
+					$id = (int)$db_con->querySingle('select * from users order by id DESC') + 1;
+					
+					$safeId = $db_con->escapeString($id);
+					$safeUn = $db_con->escapeString($regInfo['username']);
+					$safePw = $db_con->escapeString($regInfo['password']);
+					$safeEm = $db_con->escapeString($regInfo['email']);
+					$safeNm = $db_con->escapeString($regInfo['name']);
 
-				$db_con = new Sqlite3('../db/test_db.sqlite');
-				$id = (int)$db_con->querySingle('select * from users order by id DESC') + 1;
-				
-				$safeId = $db_con->escapeString($id);
-				$safeUn = $db_con->escapeString($regInfo['username']);
-				$safePw = $db_con->escapeString($regInfo['password']);
-				$safeEm = $db_con->escapeString($regInfo['email']);
-				$safeNm = $db_con->escapeString($regInfo['name']);
-				date_default_timezone_set('UTC');
-				$now = date('Y-m-d H:i:s');
+					date_default_timezone_set('UTC');
+					$now = date('Y-m-d H:i:s');
 
-				$sql = "insert into users values($safeId, '$safeUn', '$safePw', '$safeEm', '$safeNm', '$now', '$now');";
-				$newUser = $db_con->query($sql);
+					$sql = "insert into users values($safeId, '$safeUn', '$safePw', '$safeEm', '$safeNm', '$now', '$now');";
+					$newUser = $db_con->query($sql);
 
-				$safeInput = $db_con->escapeString($regInfo['username']);
-				$sql = "select * from users where username = '$safeInput';";
-				$user = $db_con->query($sql)->fetchArray();
+					$safeInput = $db_con->escapeString($regInfo['username']);
+					$sql = "select * from users where username = '$safeInput';";
+					$user = $db_con->query($sql)->fetchArray();
+					$db_con->close();
 
-				return array('error'=>false, 'user'=>$user, 'message'=>'Registration Complete.','created_at'=>'derp'); 
+					return array('error'=>false, 'user'=>$user, 'message'=>'Registration Complete.','created_at'=>'derp'); 
+				}else{
+					return array('error'=>true, 'user'=>$regInfo, 'message'=>'Usename already taken.','created_at'=>'derp'); 
+				}
+
 			}else{
 				return array('error'=>true, 'user'=>$regInfo, 'message'=>'User input contains errors.','created_at'=>'derp'); 
 			}
@@ -146,5 +155,16 @@
 
 			return true;
 		}
+
+		private static function usernameTaken($username)
+		{
+			$db_con = $db_con = new Sqlite3('../db/test_db.sqlite');
+			$safeInput = $db_con->escapeString($username);
+			$sql = "select * from users where username = '$safeInput';";
+			$user = $db_con->query($sql)->fetchArray();
+			$db_con->close();
+
+			return $user;
+		}	
 	}
 ?>
